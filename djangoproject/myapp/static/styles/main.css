@@ -1,0 +1,29 @@
+*{
+    background-color: #202020;
+    color: whitesmoke;
+}
+.navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #404040;
+    margin: 0;
+}
+a{
+    text-decoration: none;
+    background-color: #404040;
+
+}
+.container{
+    max-width: 1300px;
+    margin: auto;
+    background-color: rebeccapurple;
+    padding: 20px 0;
+}
+
+.card{
+    padding: 10px;
+    margin-bottom: 2px;
+    background-color: red;
+}
