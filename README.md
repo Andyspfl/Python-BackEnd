@@ -1564,4 +1564,15 @@ with app.app_context():
 #ejecuta la aplicacion
 if __name__ == "__main__":
     app.run(debug=True)
-``` 
+```
+#Requirements
+```txt
+flask==2.1.2
+flask-sqlalchemy==2.5.1
+werkzeug==2.1.2
+flask-login==0.6.1
+flask-jwt-extended==4.4.4
+flask-swagger-ui==4.11.1
+jinja2==3.1.2
+sqlite3==3.38.5
+```
