@@ -1564,9 +1564,8 @@ with app.app_context():
 #ejecuta la aplicacion
 if __name__ == "__main__":
     app.run(debug=True)
-```
+
 #Requirements
-```txt
 flask==2.1.2
 flask-sqlalchemy==2.5.1
 werkzeug==2.1.2
