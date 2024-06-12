@@ -637,3 +637,284 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///products.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Inicializa la base de datos
+db.init_app(app)
+
+# Inicializa la extensión JWTManager
+jwt = JWTManager(app)
+
+# Registra los blueprints de animales y usuarios en la aplicación
+app.register_blueprint(product_bp, url_prefix="/api")
+app.register_blueprint(user_bp, url_prefix="/api")
+
+# Crea las tablas si no existen
+with app.app_context():
+    db.create_all()
+
+# Ejecuta la aplicación
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000,debug=True)
+
+
+---database.py---
+from flask_sqlalchemy import SQLAlchemy
+
+# Crea una instancia de `SQLAlchemy`
+db = SQLAlchemy()
+
+---test_general.py---
+def test_index(test_client):
+    response = test_client.get("/")
+    assert response.status_code == 404
+
+
+def test_swagger_ui(test_client):
+    response = test_client.get("/api/docs/")
+    assert response.status_code == 200
+    assert b'id="swagger-ui"' in response.data
+
+---conftest.py---
+import pytest
+from flask_jwt_extended import create_access_token
+
+from app.database import db
+from app.run import app
+
+
+@pytest.fixture(scope="module")
+def test_client():
+    app.config["TESTING"] = True
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+    app.config["JWT_SECRET_KEY"] = "test_secret_key"
+
+    with app.test_client() as testing_client:
+        with app.app_context():
+            db.create_all()
+            yield testing_client
+            db.drop_all()
+
+
+@pytest.fixture(scope="module")
+def admin_auth_headers():
+    with app.app_context():
+        access_token = create_access_token(
+            identity={"username": "testuser", "roles": '["admin"]'}
+        )
+        headers = {"Authorization": f"Bearer {access_token}"}
+        return headers
+
+
+@pytest.fixture(scope="module")
+def user_auth_headers():
+    with app.app_context():
+        access_token = create_access_token(
+            identity={"username": "user", "roles": '["user"]'}
+        )
+        headers = {"Authorization": f"Bearer {access_token}"}
+        return headers
+
+---test_controller_product_user.py---
+def test_get_products_as_user(test_client, user_auth_headers):
+    # El usuario con el rol de "user" debería poder obtener la lista de productos
+    response = test_client.get("/api/products", headers=user_auth_headers)
+    assert response.status_code == 200
+    assert response.json == []
+
+
+def test_create_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder crear un nuevo producto
+    data = {
+        "name": "Smartphone",
+        "description": "Powerful smartphone with advanced features",
+        "price": 599.99,
+        "stock": 100,
+    }
+    response = test_client.post("/api/products", json=data, headers=admin_auth_headers)
+    assert response.status_code == 201
+    assert response.json["name"] == "Smartphone"
+    assert response.json["description"] == "Powerful smartphone with advanced features"
+    assert response.json["price"] == 599.99
+    assert response.json["stock"] == 100
+
+
+def test_create_product_as_user(test_client, user_auth_headers):
+    # El usuario con el rol de "user" no debería poder crear un producto
+    data = {"name": "Laptop", "description": "High-end gaming laptop", "price": 1500.0, "stock": 10}
+    response = test_client.post("/api/products", json=data, headers=user_auth_headers)
+    assert response.status_code == 403
+
+
+def test_get_product_as_user(test_client, user_auth_headers):
+    # El usuario con el rol de "user" debería poder obtener un producto específico
+    # Este test asume que existe al menos un producto en la base de datos
+    response = test_client.get("/api/products/1", headers=user_auth_headers)
+    assert response.status_code == 200
+    assert "name" in response.json
+    assert "description" in response.json
+    assert "price" in response.json
+    assert "stock" in response.json
+
+
+def test_update_product_as_user(test_client, user_auth_headers):
+    # El usuario con el rol de "user" no debería poder actualizar un producto
+    data = {"name": "Laptop", "description": "Updated description", "price": 1600.0, "stock": 5}
+    response = test_client.put("/api/products/1", json=data, headers=user_auth_headers)
+    assert response.status_code == 403
+
+
+def test_delete_product_as_user(test_client, user_auth_headers):
+    # El usuario con el rol de "user" no debería poder eliminar un producto
+    response = test_client.delete("/api/products/1", headers=user_auth_headers)
+    assert response.status_code == 403
+    
+---tesr_controller_product_admin.py---
+import pytest
+
+# Tests para el controlador de productos
+
+
+def test_get_products(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder obtener la lista de productos
+    response = test_client.get("/api/products", headers=admin_auth_headers)
+    assert response.status_code == 200
+    assert response.json == []
+
+
+def test_create_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder crear un nuevo producto
+    data = {
+        "name": "Smartphone",
+        "description": "Powerful smartphone with advanced features",
+        "price": 599.99,
+        "stock": 100,
+    }
+    response = test_client.post("/api/products", json=data, headers=admin_auth_headers)
+    assert response.status_code == 201
+    assert response.json["name"] == "Smartphone"
+    assert response.json["description"] == "Powerful smartphone with advanced features"
+    assert response.json["price"] == 599.99
+    assert response.json["stock"] == 100
+
+
+def test_get_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder obtener un producto específico
+    # Este test asume que existe al menos un producto en la base de datos
+    response = test_client.get("/api/products/1", headers=admin_auth_headers)
+    assert response.status_code == 200
+    assert "name" in response.json
+
+
+def test_get_nonexistent_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería recibir un error al intentar obtener un producto inexistente
+    response = test_client.get("/api/products/999", headers=admin_auth_headers)
+    assert response.status_code == 404
+    assert response.json["error"] == "Producto no encontrado"
+
+
+def test_create_product_invalid_data(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería recibir un error al intentar crear un producto sin datos requeridos
+    data = {"name": "Laptop"}  # Falta description, price y stock
+    response = test_client.post("/api/products", json=data, headers=admin_auth_headers)
+    assert response.status_code == 400
+    assert response.json["error"] == "Faltan datos requeridos"
+
+
+def test_update_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder actualizar un producto existente
+    data = {
+        "name": "Smartphone Pro",
+        "description": "Updated version with improved performance",
+        "price": 699.99,
+        "stock": 150,
+    }
+    response = test_client.put("/api/products/1", json=data, headers=admin_auth_headers)
+    assert response.status_code == 200
+    assert response.json["name"] == "Smartphone Pro"
+    assert response.json["description"] == "Updated version with improved performance"
+    assert response.json["price"] == 699.99
+    assert response.json["stock"] == 150
+
+
+def test_update_nonexistent_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería recibir un error al intentar actualizar un producto inexistente
+    data = {
+        "name": "Tablet",
+        "description": "Portable device with touchscreen interface",
+        "price": 299.99,
+        "stock": 50,
+    }
+    response = test_client.put(
+        "/api/products/999", json=data, headers=admin_auth_headers
+    )
+    assert response.status_code == 404
+    assert response.json["error"] == "Producto no encontrado"
+
+
+def test_delete_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería poder eliminar un producto existente
+    response = test_client.delete("/api/products/1", headers=admin_auth_headers)
+    assert response.status_code == 204
+
+    # Verifica que el producto ha sido eliminado
+    response = test_client.get("/api/products/1", headers=admin_auth_headers)
+    assert response.status_code == 404
+    assert response.json["error"] == "Producto no encontrado"
+
+
+def test_delete_nonexistent_product(test_client, admin_auth_headers):
+    # El usuario con el rol de "admin" debería recibir un error al intentar eliminar un producto inexistente
+    response = test_client.delete("/api/products/999", headers=admin_auth_headers)
+    assert response.status_code == 404
+    assert response.json["error"] == "Producto no encontrado"
+---tesr_user_controller.py---
+import pytest
+from app.models.user_model import User
+
+
+@pytest.fixture
+def new_user():
+    return {"username": "testuser", "password": "testpassword"}
+
+
+def test_register_user(test_client, new_user):
+    response = test_client.post("/api/register", json=new_user)
+    assert response.status_code == 201
+    assert response.json["message"] == "Usuario creado exitosamente"
+
+
+def test_register_duplicate_user(test_client, new_user):
+
+    # Intentar registrar el mismo usuario de nuevo
+    response = test_client.post("/api/register", json=new_user)
+    assert response.status_code == 400
+    assert response.json["error"] == "El nombre de usuario ya está en uso"
+
+
+def test_login_user(test_client, new_user):
+    # Ahora intentar iniciar sesión
+    login_credentials = {
+        "username": new_user["username"],
+        "password": new_user["password"],
+    }
+    response = test_client.post("/api/login", json=login_credentials)
+    assert response.status_code == 200
+    assert response.json["access_token"]
+
+
+def test_login_invalid_user(test_client, new_user):
+    # Intentar iniciar sesión sin registrar al usuario
+    login_credentials = {
+        "username": "nousername",
+        "password": new_user["password"],
+    }
+    response = test_client.post("/api/login", json=login_credentials)
+    assert response.status_code == 401
+    assert response.json["error"] == "Credenciales inválidas"
+
+
+def test_login_wrong_password(test_client, new_user):
+    # Intentar iniciar sesión con una contraseña incorrecta
+    login_credentials = {"username": new_user["username"], "password": "wrongpassword"}
+    response = test_client.post("/api/login", json=login_credentials)
+    assert response.status_code == 401
+    assert response.json["error"] == "Credenciales inválidas"
+```
