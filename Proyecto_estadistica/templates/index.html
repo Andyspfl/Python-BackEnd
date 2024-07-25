@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Datos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Análisis de Datos</h1>
+        <form action="{{ url_for('analizar') }}" method="post">
+            <label for="datos">Ingrese los datos separados por espacios:</label><br>
+            <input type="text" id="datos" name="datos" required><br><br>
+            <label for="tipo-variable">Seleccione el tipo de variable:</label><br>
+            <select id="tipo-variable" name="tipo-variable" required>
+                <option value="">Seleccione una opción</option>
+                <option value="Cualitativa">Cualitativa</option>
+                <option value="Cuantitativa discreta">Cuantitativa discreta</option>
+                <option value="Cuantitativa continua">Cuantitativa continua</option>
+            </select><br><br>
+            <button type="submit">Analizar</button>
+        </form>
+
+        {% if tabla_html %}
+        <h2>Resultados</h2>
+        <div class="result-container">
+            <div class="table-container">
+                <h3>Tabla de Datos</h3>
+                {{ tabla_html|safe }}
+            </div>
+            <div class="chart-container">
+                {% if grafico_circular %}
+                <h3>Gráfico Circular</h3>
+                <img src="{{ grafico_circular }}" alt="Gráfico Circular">
+                {% endif %}
+                {% if grafico_barras %}
+                <h3>Gráfico de Barras</h3>
+                <img src="{{ grafico_barras }}" alt="Gráfico de Barras">
+                {% endif %}
+            </div>
+            <div class="measures-container">
+                {% if medidas_html %}
+                <h3>Medidas de Centralidad y Dispersión</h3>
+                {{ medidas_html|safe }}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+
+</html>
