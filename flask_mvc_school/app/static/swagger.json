@@ -1,0 +1,1258 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Gestion de Usuarios y Restaurantes API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/students": {
+      "get": {
+        "summary": "Obtiene la lista de estudiantes",
+        "tags": ["Admin", "Student"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de estudiantes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Student"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuevo estudiante",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Estudiante creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/students/{id}": {
+      "get": {
+        "summary": "Obtiene un estudiante específico por su ID",
+        "tags": ["Admin", "Student"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del estudiante",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualiza un estudiante existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estudiante actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Elimina un estudiante existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Estudiante eliminado"
+          }
+        }
+      }
+    },
+    "/api/teachers": {
+      "get": {
+        "summary": "Obtiene la lista de todos los profesores",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de profesores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Teacher"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuevo profesor",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Teacher"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profesor creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/teachers/{id}": {
+      "get": {
+        "summary": "Obtiene un profesor específico por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del profesor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualiza un profesor existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Teacher"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profesor actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Elimina un profesor existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Profesor eliminado"
+          }
+        }
+      }
+    },
+    "/api/tuitions": {
+      "get": {
+        "summary": "Obtiene la lista de todas las matrículas",
+        "tags": ["Admin", "Student"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de matrículas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tuition"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea una nueva matrícula",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tuition"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Matrícula creada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tuition"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tuitions/{id}": {
+      "get": {
+        "summary": "Obtiene una matrícula específica por su ID",
+        "tags": ["Admin", "Student"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles de la matrícula",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tuition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualiza una matrícula existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tuition"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Matrícula actualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tuition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Elimina una matrícula existente por su ID",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Matrícula eliminada"
+          }
+        }
+      }
+    },
+    "/api/qualifications": {
+      "get": {
+        "summary": "Obtiene la lista de todas las calificaciones",
+        "tags": ["Admin", "Student", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de calificaciones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Qualification"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea una nueva calificación",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Qualification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calificación creada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Qualification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos requeridos faltantes o formato de fecha inválido"
+          }
+        }
+      }
+    },
+    "/api/qualifications/{id}": {
+      "get": {
+        "summary": "Obtiene una calificación específica por su ID",
+        "tags": ["Admin", "Student", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles de la calificación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Qualification"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Calificación no encontrada"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualiza una calificación existente por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Qualification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calificación actualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Qualification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Formato de fecha inválido"
+          },
+          "404": {
+            "description": "Calificación no encontrada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Elimina una calificación existente por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Calificación eliminada"
+          },
+          "404": {
+            "description": "Calificación no encontrada"
+          }
+        }
+      }
+    },
+    "/api/courses": {
+      "get": {
+        "summary": "Obtiene la lista de todos los cursos",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de cursos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Course"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Crea un nuevo curso",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Course"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Curso creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos requeridos faltantes"
+          }
+        }
+      }
+    },
+    "/api/courses/{id}": {
+      "get": {
+        "summary": "Obtiene un curso específico por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del curso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Curso no encontrado"
+          }
+        }
+      },
+      "put": {
+        "summary": "Actualiza un curso existente por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Course"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Curso actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos requeridos faltantes"
+          },
+          "404": {
+            "description": "Curso no encontrado"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Elimina un curso existente por su ID",
+        "tags": ["Admin", "Teacher"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Curso eliminado"
+          },
+          "404": {
+            "description": "Curso no encontrado"
+          }
+        }
+      }
+    },
+    "/api/register": {
+      "post": {
+        "summary": "Registra un nuevo usuario",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nombre del usuario",
+                    "example": "Juan Pérez"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Correo electrónico del usuario",
+                    "example": "juan@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Contraseña del usuario",
+                    "example": "password123"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Número de teléfono del usuario",
+                    "example": "+123456789"
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "Rol del usuario (admin, student, teacher)",
+                    "example": "student"
+                  }
+                },
+                "required": ["name", "email", "password", "phone", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Usuario registrado exitosamente"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Faltan datos obligatorios o el email ya está registrado"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "Inicia sesión y obtiene un token de acceso",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Correo electrónico del usuario",
+                    "example": "juan@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "Contraseña del usuario",
+                    "example": "password123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso, se devuelve el token de acceso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "summary": "Obtiene la información del usuario autenticado",
+        "tags": ["User"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Información del usuario actual",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Juan Pérez"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "juan@example.com"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+123456789"
+                    },
+                    "role": {
+                      "type": "string",
+                      "example": "student"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "summary": "Obtiene la lista de todos los usuarios (solo admin)",
+        "tags": ["User"],
+        "security": [
+          {
+            "JWTAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "juan@example.com"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "+123456789"
+                      },
+                      "role": {
+                        "type": "string",
+                        "example": "student"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado. Se requiere rol de administrador"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "JWTAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nombre completo del usuario",
+            "example": "Juan Pérez"
+          },
+          "email": {
+            "type": "string",
+            "description": "Correo electrónico del usuario",
+            "example": "juan@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Número de teléfono del usuario",
+            "example": "+123456789"
+          },
+          "role": {
+            "type": "string",
+            "description": "Rol del usuario (admin, student, teacher)",
+            "example": "student"
+          }
+        }
+      },
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID del curso",
+            "example": 1
+          },
+          "code": {
+            "type": "string",
+            "description": "Código del curso",
+            "example": "CS101"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nombre del curso",
+            "example": "Introducción a la Computación"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descripción del curso",
+            "example": "Curso introductorio de programación y computación"
+          },
+          "credits": {
+            "type": "integer",
+            "description": "Número de créditos del curso",
+            "example": 3
+          },
+          "teacher_id": {
+            "type": "integer",
+            "description": "ID del profesor encargado del curso",
+            "example": 2
+          },
+          "period": {
+            "type": "string",
+            "description": "Periodo académico en el que se imparte el curso",
+            "example": "2024-1"
+          },
+          "level": {
+            "type": "string",
+            "description": "Nivel del curso (INICIAL, INTERMEDIO, AVANZADO)",
+            "enum": ["INICIAL", "INTERMEDIO", "AVANZADO"],
+            "example": "INTERMEDIO"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "Qualification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID de la calificación",
+            "example": 1
+          },
+          "tuition_id": {
+            "type": "integer",
+            "description": "ID de la matrícula asociada",
+            "example": 101
+          },
+          "grade": {
+            "type": "number",
+            "format": "float",
+            "description": "Nota de la calificación",
+            "example": 90.5
+          },
+          "evaluation_type": {
+            "type": "string",
+            "description": "Tipo de evaluación (por ejemplo: Examen, Proyecto)",
+            "example": "Examen"
+          },
+          "evaluation_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de la evaluación",
+            "example": "2024-06-15"
+          }
+        }
+      },
+      "Tuition": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID de la matrícula",
+            "example": 1
+          },
+          "student_id": {
+            "type": "integer",
+            "description": "ID del estudiante asociado a la matrícula",
+            "example": 101
+          },
+          "course_id": {
+            "type": "integer",
+            "description": "ID del curso asociado a la matrícula",
+            "example": 202
+          },
+          "enrollment_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de inscripción de la matrícula",
+            "example": "2024-01-15"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVO", "COMPLETADO", "ABANDONADO"],
+            "description": "Estado de la matrícula",
+            "example": "ACTIVO"
+          }
+        }
+      },
+      "Teacher": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID del profesor",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID del usuario asociado al profesor",
+            "example": 123
+          },
+          "speciality": {
+            "type": "string",
+            "description": "Especialidad del profesor",
+            "example": "Matemáticas"
+          },
+          "hiring_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de contratación del profesor",
+            "example": "2015-08-20"
+          },
+          "academic_title": {
+            "type": "string",
+            "description": "Título académico del profesor",
+            "example": "Licenciado en Matemáticas"
+          }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID del estudiante",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "description": "ID del usuario asociado al estudiante",
+            "example": 123
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de nacimiento del estudiante",
+            "example": "2000-01-01"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["M", "F", "OTRO"],
+            "description": "Género del estudiante",
+            "example": "M"
+          },
+          "address": {
+            "type": "string",
+            "description": "Dirección del estudiante",
+            "example": "Calle Falsa 123"
+          },
+          "enrollment_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Fecha de inscripción del estudiante",
+            "example": "2024-09-01"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Admin",
+      "description": "Operaciones para administradores"
+    },
+    {
+      "name": "Customer",
+      "description": "Operaciones para clientes"
+    },
+    {
+      "name": "User",
+      "description": "Operaciones para autenticacion"
+    }
+  ]
+}

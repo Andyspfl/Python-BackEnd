@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.models.course_model import Course  # Asegúrate de que el modelo Course esté correctamente importado
-from app.utils.decorators import jwt_required, roles_required
-from app.views.course_view import render_course_detail, render_course_list  # Asegúrate de que estas funciones de vista existan y estén correctamente importadas
+from models.course_model import Course
+from utils.decorators import jwt_required, roles_required
+from views.course_view import render_course_detail, render_course_list
 
 # Crear un blueprint para el controlador de cursos
 course_bp = Blueprint("course", __name__)
@@ -9,7 +9,7 @@ course_bp = Blueprint("course", __name__)
 # Ruta para obtener la lista de cursos
 @course_bp.route("/courses", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin", "profesor", "estudiante"])
+@roles_required(roles=["admin", "teacher", "student"])
 def get_courses():
     courses = Course.get_all()
     return jsonify(render_course_list(courses))
@@ -17,7 +17,7 @@ def get_courses():
 # Ruta para obtener un curso específico por su ID
 @course_bp.route("/courses/<int:id>", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin", "profesor", "estudiante"])
+@roles_required(roles=["admin", "teacher", "student"])
 def get_course(id):
     course = Course.get_by_id(id)
     if course:
@@ -27,30 +27,30 @@ def get_course(id):
 # Ruta para crear un nuevo curso
 @course_bp.route("/courses", methods=["POST"])
 @jwt_required
-@roles_required(roles=["admin", "profesor"])
+@roles_required(roles=["admin"])
 def create_course():
     data = request.json
-    codigo = data.get("codigo")
-    nombre = data.get("nombre")
-    descripcion = data.get("descripcion")
-    creditos = data.get("creditos")
-    profesor_id = data.get("profesor_id")
-    periodo = data.get("periodo")
-    nivel = data.get("nivel")
+    code = data.get("code")
+    name = data.get("name")
+    description = data.get("description")
+    credits = data.get("credits")
+    teacher_id = data.get("teacher_id")
+    period = data.get("period")
+    level = data.get("level")
 
     # Validación simple de datos de entrada
-    if not codigo or not nombre or not creditos or not profesor_id or not nivel:
+    if not code or not name or not description or not credits or not teacher_id or not period or not level:
         return jsonify({"error": "Faltan datos requeridos"}), 400
 
     # Crear un nuevo curso y guardarlo en la base de datos
     course = Course(
-        codigo=codigo,
-        nombre=nombre,
-        descripcion=descripcion,
-        creditos=creditos,
-        profesor_id=profesor_id,
-        periodo=periodo,
-        nivel=nivel
+        code=code,
+        name=name,
+        description=description,
+        credits=credits,
+        teacher_id=teacher_id,
+        period=period,
+        level=level
     )
     course.save()
 
@@ -59,7 +59,7 @@ def create_course():
 # Ruta para actualizar un curso existente
 @course_bp.route("/courses/<int:id>", methods=["PUT"])
 @jwt_required
-@roles_required(roles=["admin", "profesor"])
+@roles_required(roles=["admin"])
 def update_course(id):
     course = Course.get_by_id(id)
 
@@ -67,23 +67,23 @@ def update_course(id):
         return jsonify({"error": "Curso no encontrado"}), 404
 
     data = request.json
-    codigo = data.get("codigo")
-    nombre = data.get("nombre")
-    descripcion = data.get("descripcion")
-    creditos = data.get("creditos")
-    profesor_id = data.get("profesor_id")
-    periodo = data.get("periodo")
-    nivel = data.get("nivel")
+    code = data.get("code")
+    name = data.get("name")
+    description = data.get("description")
+    credits = data.get("credits")
+    teacher_id = data.get("teacher_id")
+    period = data.get("period")
+    level = data.get("level")
 
     # Actualizar los datos del curso
     course.update(
-        codigo=codigo,
-        nombre=nombre,
-        descripcion=descripcion,
-        creditos=creditos,
-        profesor_id=profesor_id,
-        periodo=periodo,
-        nivel=nivel
+        code=code,
+        name=name,
+        description=description,
+        credits=credits,
+        teacher_id=teacher_id,
+        period=period,
+        level=level
     )
 
     return jsonify(render_course_detail(course))
@@ -91,7 +91,7 @@ def update_course(id):
 # Ruta para eliminar un curso existente
 @course_bp.route("/courses/<int:id>", methods=["DELETE"])
 @jwt_required
-@roles_required(roles=["admin", "profesor"])
+@roles_required(roles=["admin"])
 def delete_course(id):
     course = Course.get_by_id(id)
 

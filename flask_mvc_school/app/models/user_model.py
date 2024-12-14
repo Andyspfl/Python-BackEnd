@@ -1,51 +1,37 @@
-from app.database import db
-from sqlalchemy.orm import Session
+import json
 
-class User(db.Model):
-    __tablename__ = "usuarios"
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    tipo_usuario = db.Column(db.Enum('admin', 'profesor', 'estudiante', name='tipo_usuario'), nullable=False)
-    activo = db.Column(db.Boolean, default=True)
-    fecha_creacion = db.Column(db.TIMESTAMP, default=db.func.current_timestamp())
+from database import db
 
-    def __init__(self, username, email, password, tipo_usuario, activo=True, fecha_creacion=None):
-        self.username = username
+class User(UserMixin, db.Model):
+    
+    __tablename__ = "users"
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(50), nullable = False)
+    password_hash = db.Column(db.String(129), nullable = False)
+    phone = db.Column(db.String(20), nullable = False)
+    role = db.Column(db.String(20), nullable = False)
+    email = db.Column(db.String(100), nullable = False)
+    
+    
+    
+    def __init__(self, name = None, password = None, phone = None, role = None, email = None):
+        self.name = name
+        self.password_hash = generate_password_hash(password)
+        self.phone = phone
+        self.role = role
         self.email = email
-        self.password = password
-        self.tipo_usuario = tipo_usuario
-        self.activo = activo
-        self.fecha_creacion = fecha_creacion or db.func.current_timestamp()
-
+        
     def save(self):
         db.session.add(self)
         db.session.commit()
-
+        
     @staticmethod
-    def get_all():
-        return User.query.all()
-
-    @staticmethod
-    def get_by_id(id):
-        session: Session = db.session
-        return session.get(User, id)
-
-    def update(self, username=None, email=None, password=None, tipo_usuario=None, activo=None):
-        if username is not None:
-            self.username = username
-        if email is not None:
-            self.email = email
-        if password is not None:
-            self.password = password
-        if tipo_usuario is not None:
-            self.tipo_usuario = tipo_usuario
-        if activo is not None:
-            self.activo = activo
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+    def find_by_email(email):
+        return User.query.filter_by(email = email).first()
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)

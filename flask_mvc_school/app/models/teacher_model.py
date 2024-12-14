@@ -1,56 +1,48 @@
-from app.database import db
+from database import db
 from sqlalchemy.orm import Session
 
 class Teacher(db.Model):
-    __tablename__ = "profesores"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), unique=True, nullable=False)
-    nombre = db.Column(db.String(100), nullable=False)
-    apellido = db.Column(db.String(100), nullable=False)
-    especialidad = db.Column(db.String(100), nullable=True)
-    fecha_contratacion = db.Column(db.Date, nullable=True)
-    titulo_academico = db.Column(db.String(100), nullable=True)
-
-    # Relación con la tabla 'usuarios'
-    usuario = db.relationship('User', backref=db.backref('teachers', lazy=True))
-
-    def __init__(self, usuario_id, nombre, apellido, especialidad=None, fecha_contratacion=None, titulo_academico=None):
-        self.usuario_id = usuario_id
-        self.nombre = nombre
-        self.apellido = apellido
-        self.especialidad = especialidad
-        self.fecha_contratacion = fecha_contratacion
-        self.titulo_academico = titulo_academico
-
+    __tablename__ = "teachers"
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable = False)
+    speciality = db.Column(db.String(100), nullable = False)
+    hiring_date = db.Column(db.Date, nullable = False)
+    academic_title = db.Column(db.String(100), nullable = False)
+    
+    user = db.relationship("User", backref = db.backref('teachers', lazy=True))
+    
+    def __init__(self, user_id, speciality, hiring_date, academic_title):
+        
+        self.user_id = user_id
+        self.speciality = speciality
+        self.hiring_date = hiring_date
+        self.academic_title = academic_title
+        
     def save(self):
         db.session.add(self)
         db.session.commit()
-
+        
     @staticmethod
     def get_all():
         return Teacher.query.all()
-
+        
     @staticmethod
     def get_by_id(id):
         session: Session = db.session
         return session.get(Teacher, id)
-
-    def update(self, usuario_id=None, nombre=None, apellido=None, especialidad=None, fecha_contratacion=None, titulo_academico=None):
-        if usuario_id is not None:
-            self.usuario_id = usuario_id
-        if nombre is not None:
-            self.nombre = nombre
-        if apellido is not None:
-            self.apellido = apellido
-        if especialidad is not None:
-            self.especialidad = especialidad
-        if fecha_contratacion is not None:
-            self.fecha_contratacion = fecha_contratacion
-        if titulo_academico is not None:
-            self.titulo_academico = titulo_academico
+    
+    def update(self, user_id = None, speciality = None, hiring_date = None, academic_title = None):
+        if user_id is not None:
+            self.user_id = user_id
+        if speciality is not None:
+            self.speciality = speciality
+        if hiring_date is not None:
+            self.hiring_date = hiring_date
+        if academic_title is not None:
+            self.academic_title = academic_title
         db.session.commit()
-
+        
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+

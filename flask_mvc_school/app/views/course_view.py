@@ -5,13 +5,13 @@ def render_course_list(courses):
     return [
         {
             "id": course.id,
-            "codigo": course.codigo,
-            "nombre": course.nombre,
-            "descripcion": course.descripcion,
-            "creditos": course.creditos,
-            "profesor_id": course.profesor_id,
-            "periodo": course.periodo,
-            "nivel": course.nivel,
+            "code": course.code,
+            "name": course.name,
+            "description": course.description,
+            "credits": course.credits,
+            "teacher_id": course.teacher_id,
+            "period": course.period,
+            "level": course.level
         }
         for course in courses
     ]
@@ -20,11 +20,11 @@ def render_course_detail(course):
     # Representa los detalles de un curso como un diccionario
     return {
         "id": course.id,
-        "codigo": course.codigo,
-        "nombre": course.nombre,
-        "descripcion": course.descripcion,
-        "creditos": course.creditos,
-        "profesor_id": course.profesor_id,
-        "periodo": course.periodo,
-        "nivel": course.nivel,
+        "code": course.code,
+        "name": course.name,
+        "description": course.description,
+        "credits": course.credits,
+        "teacher_id": course.teacher_id,
+        "period": course.period,
+        "level": course.level
     }

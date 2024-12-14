@@ -1,60 +1,63 @@
 from flask import Blueprint, jsonify, request
-from app.models.teacher_model import Teacher  # Asegúrate de que el modelo Teacher esté correctamente importado
-from app.utils.decorators import jwt_required, roles_required
-from app.views.teacher_view import render_teacher_detail, render_teacher_list  # Asegúrate de que estas funciones de vista existan y estén correctamente importadas
+from datetime import datetime
+from models.teacher_model import Teacher
+from utils.decorators import jwt_required, roles_required
+from views.teacher_view import render_teacher_detail, render_teacher_list
 
-# Crear un blueprint para el controlador de profesores
+# Create a blueprint for the teachers controller
 teacher_bp = Blueprint("teacher", __name__)
 
-# Ruta para obtener la lista de profesores
+# Route to get the list of teachers
 @teacher_bp.route("/teachers", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin"])
+@roles_required(roles=["admin", "teacher"])
 def get_teachers():
     teachers = Teacher.get_all()
     return jsonify(render_teacher_list(teachers))
 
-# Ruta para obtener un profesor específico por su ID
+# Route to get a specific teacher by its ID
 @teacher_bp.route("/teachers/<int:id>", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin", "profesor"])
+@roles_required(roles=["admin", "teacher"])
 def get_teacher(id):
     teacher = Teacher.get_by_id(id)
     if teacher:
         return jsonify(render_teacher_detail(teacher))
     return jsonify({"error": "Profesor no encontrado"}), 404
 
-# Ruta para crear un nuevo profesor
+# Route to create a new teacher
 @teacher_bp.route("/teachers", methods=["POST"])
 @jwt_required
 @roles_required(roles=["admin"])
 def create_teacher():
     data = request.json
-    usuario_id = data.get("usuario_id")
-    nombre = data.get("nombre")
-    apellido = data.get("apellido")
-    especialidad = data.get("especialidad")
-    fecha_contratacion = data.get("fecha_contratacion")
-    titulo_academico = data.get("titulo_academico")
+    user_id = data.get("user_id")
+    speciality = data.get("speciality")
+    hiring_date = data.get("hiring_date")
+    academic_title = data.get("academic_title")
 
-    # Validación simple de datos de entrada
-    if not usuario_id or not nombre or not apellido or not especialidad or not fecha_contratacion:
+    # Simple validation of required input
+    if not user_id or not speciality or not hiring_date or not academic_title:
         return jsonify({"error": "Faltan datos requeridos"}), 400
 
-    # Crear un nuevo profesor y guardarlo en la base de datos
+    try:
+        # Handle optional microseconds in the date format
+        hiring_date = datetime.fromisoformat(hiring_date.rstrip("Z")).date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido"}), 400
+
+    # Create a new teacher and save it to the database
     teacher = Teacher(
-        usuario_id=usuario_id,
-        nombre=nombre,
-        apellido=apellido,
-        especialidad=especialidad,
-        fecha_contratacion=fecha_contratacion,
-        titulo_academico=titulo_academico
+        user_id=user_id,
+        speciality=speciality,
+        hiring_date=hiring_date,
+        academic_title=academic_title
     )
     teacher.save()
 
     return jsonify(render_teacher_detail(teacher)), 201
 
-# Ruta para actualizar un profesor existente
+# Route to update an existing teacher
 @teacher_bp.route("/teachers/<int:id>", methods=["PUT"])
 @jwt_required
 @roles_required(roles=["admin"])
@@ -65,26 +68,29 @@ def update_teacher(id):
         return jsonify({"error": "Profesor no encontrado"}), 404
 
     data = request.json
-    usuario_id = data.get("usuario_id")
-    nombre = data.get("nombre")
-    apellido = data.get("apellido")
-    especialidad = data.get("especialidad")
-    fecha_contratacion = data.get("fecha_contratacion")
-    titulo_academico = data.get("titulo_academico")
+    user_id = data.get("user_id")
+    speciality = data.get("speciality")
+    hiring_date = data.get("hiring_date")
+    academic_title = data.get("academic_title")
 
-    # Actualizar los datos del profesor
+    try:
+        if hiring_date:
+            # Handle optional microseconds in the date format
+            hiring_date = datetime.fromisoformat(hiring_date.rstrip("Z")).date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido"}), 400
+
+    # Update teacher data
     teacher.update(
-        usuario_id=usuario_id,
-        nombre=nombre,
-        apellido=apellido,
-        especialidad=especialidad,
-        fecha_contratacion=fecha_contratacion,
-        titulo_academico=titulo_academico
+        user_id=user_id,
+        speciality=speciality,
+        hiring_date=hiring_date,
+        academic_title=academic_title
     )
 
     return jsonify(render_teacher_detail(teacher))
 
-# Ruta para eliminar un profesor existente
+# Route to delete an existing teacher
 @teacher_bp.route("/teachers/<int:id>", methods=["DELETE"])
 @jwt_required
 @roles_required(roles=["admin"])
@@ -94,8 +100,8 @@ def delete_teacher(id):
     if not teacher:
         return jsonify({"error": "Profesor no encontrado"}), 404
 
-    # Eliminar el profesor de la base de datos
+    # Delete the teacher from the database
     teacher.delete()
 
-    # Respuesta vacía con código de estado 204 (sin contenido)
+    # Empty response with status code 204 (No Content)
     return "", 204

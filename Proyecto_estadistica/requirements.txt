@@ -1,5 +1,0 @@
-flask
-tabulate
-pandas
-matplotlib
-seaborn

@@ -1,57 +1,66 @@
 from flask import Blueprint, jsonify, request
-from app.models.tuition_model import Tuition  # Asegúrate de que el modelo Tuition esté correctamente importado
-from app.utils.decorators import jwt_required, roles_required
-from app.views.tuition_view import render_tuition_detail, render_tuition_list  # Asegúrate de que estas funciones de vista existan y estén correctamente importadas
+from datetime import datetime
+from models.tuition_model import Tuition
+from utils.decorators import jwt_required, roles_required
+from views.tuition_view import render_tuition_detail, render_tuition_list
 
-# Crear un blueprint para el controlador de matrículas
+# Create a blueprint for the tuitions controller
 tuition_bp = Blueprint("tuition", __name__)
 
-# Ruta para obtener la lista de matrículas
+# Route to get the list of tuitions
 @tuition_bp.route("/tuitions", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin", "estudiante", "profesor"])
+@roles_required(roles=["admin", "student", "teacher"])
 def get_tuitions():
     tuitions = Tuition.get_all()
     return jsonify(render_tuition_list(tuitions))
 
-# Ruta para obtener una matrícula específica por su ID
+# Route to get a specific tuition by its ID
 @tuition_bp.route("/tuitions/<int:id>", methods=["GET"])
 @jwt_required
-@roles_required(roles=["admin", "estudiante", "profesor"])
+@roles_required(roles=["admin", "student", "teacher"])
 def get_tuition(id):
     tuition = Tuition.get_by_id(id)
     if tuition:
         return jsonify(render_tuition_detail(tuition))
     return jsonify({"error": "Matrícula no encontrada"}), 404
 
-# Ruta para crear una nueva matrícula
+# Route to create a new tuition
 @tuition_bp.route("/tuitions", methods=["POST"])
 @jwt_required
-@roles_required(roles=["admin", "estudiante"])
+@roles_required(roles=["admin", "student"])
 def create_tuition():
     data = request.json
-    estudiante_id = data.get("estudiante_id")
-    curso_id = data.get("curso_id")
-    estado = data.get("estado")
+    student_id = data.get("student_id")
+    course_id = data.get("course_id")
+    enrollment_date = data.get("enrollment_date")
+    status = data.get("status")
 
-    # Validación simple de datos de entrada
-    if not estudiante_id or not curso_id:
+    # Simple validation of required input
+    if not student_id or not course_id or not enrollment_date or not status:
         return jsonify({"error": "Faltan datos requeridos"}), 400
 
-    # Crear una nueva matrícula y guardarla en la base de datos
+    try:
+        # Handle optional microseconds in the date format
+        enrollment_date = datetime.fromisoformat(enrollment_date.rstrip("Z")).date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido"}), 400
+
+    # Create a new tuition and save it to the database
     tuition = Tuition(
-        estudiante_id=estudiante_id,
-        curso_id=curso_id,
-        estado=estado
+        student_id=student_id,
+        course_id=course_id,
+        enrollment_date=enrollment_date,
+        status=status
     )
     tuition.save()
 
     return jsonify(render_tuition_detail(tuition)), 201
 
-# Ruta para actualizar una matrícula existente
+# Route to update an existing tuition
 @tuition_bp.route("/tuitions/<int:id>", methods=["PUT"])
 @jwt_required
-@roles_required(roles=["admin", "estudiante"])
+@roles_required(roles=["admin", "student"])
 def update_tuition(id):
     tuition = Tuition.get_by_id(id)
 
@@ -59,25 +68,40 @@ def update_tuition(id):
         return jsonify({"error": "Matrícula no encontrada"}), 404
 
     data = request.json
-    estado = data.get("estado")
+    student_id = data.get("student_id")
+    course_id = data.get("course_id")
+    enrollment_date = data.get("enrollment_date")
+    status = data.get("status")
 
-    # Actualizar el estado de la matrícula
-    tuition.update(estado=estado)
+    try:
+        if enrollment_date:
+            # Handle optional microseconds in the date format
+            enrollment_date = datetime.fromisoformat(enrollment_date.rstrip("Z")).date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido"}), 400
+
+    # Update tuition data
+    tuition.update(
+        student_id=student_id,
+        course_id=course_id,
+        enrollment_date=enrollment_date,
+        status=status
+    )
 
     return jsonify(render_tuition_detail(tuition))
 
-# Ruta para eliminar una matrícula existente
+# Route to delete an existing tuition
 @tuition_bp.route("/tuitions/<int:id>", methods=["DELETE"])
 @jwt_required
-@roles_required(roles=["admin", "estudiante"])
+@roles_required(roles=["admin", "student"])
 def delete_tuition(id):
     tuition = Tuition.get_by_id(id)
 
     if not tuition:
         return jsonify({"error": "Matrícula no encontrada"}), 404
 
-    # Eliminar la matrícula de la base de datos
+    # Delete the tuition from the database
     tuition.delete()
 
-    # Respuesta vacía con código de estado 204 (sin contenido)
+    # Empty response with status code 204 (No Content)
     return "", 204
