@@ -1,0 +1,298 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Restaurant API",
+      "description": "API para gestionar restaurantes. Proporciona endpoints para crear, leer, actualizar y eliminar restaurantes.",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/api/restaurants": {
+        "get": {
+          "summary": "Obtener lista de restaurantes",
+          "operationId": "getRestaurants",
+          "tags": ["User", "Admin"],
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de restaurantes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Restaurant"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "post": {
+          "summary": "Crear un nuevo restaurante",
+          "operationId": "createRestaurant",
+          "tags": ["Admin"],
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestaurantInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Restaurante creado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Restaurant"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Datos obligatorios faltantes"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        }
+      },
+      "/api/restaurants/{id}": {
+        "get": {
+          "summary": "Obtener un restaurante por ID",
+          "operationId": "getRestaurantById",
+          "tags": ["User", "Admin"],
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Detalles del restaurante",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Restaurant"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Restaurante no encontrado"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "put": {
+          "summary": "Actualizar un restaurante por ID",
+          "operationId": "updateRestaurantById",
+          "tags": ["Admin"],
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestaurantInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Restaurante actualizado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Restaurant"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Restaurante no encontrado"
+            },
+            "400": {
+              "description": "Datos obligatorios faltantes"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Eliminar un restaurante por ID",
+          "operationId": "deleteRestaurantById",
+          "tags": ["Admin"],
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Restaurante eliminado"
+            },
+            "404": {
+              "description": "Restaurante no encontrado"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "JWT": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "schemas": {
+        "Restaurant": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Restaurante A"
+            },
+            "address": {
+              "type": "string",
+              "example": "Calle 123"
+            },
+            "city": {
+              "type": "string",
+              "example": "Ciudad X"
+            },
+            "phone": {
+              "type": "string",
+              "example": "+123456789"
+            },
+            "description": {
+              "type": "string",
+              "example": "Restaurante excelente con buena comida"
+            },
+            "rating": {
+              "type": "number",
+              "format": "float",
+              "example": 4.5
+            }
+          }
+        },
+        "RestaurantInput": {
+          "type": "object",
+          "required": [
+            "name",
+            "address",
+            "city",
+            "phone",
+            "description",
+            "rating"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Restaurante A"
+            },
+            "address": {
+              "type": "string",
+              "example": "Calle 123"
+            },
+            "city": {
+              "type": "string",
+              "example": "Ciudad X"
+            },
+            "phone": {
+              "type": "string",
+              "example": "+123456789"
+            },
+            "description": {
+              "type": "string",
+              "example": "Restaurante excelente con buena comida"
+            },
+            "rating": {
+              "type": "number",
+              "format": "float",
+              "example": 4.5
+            }
+          }
+        }
+      }
+    }
+  }
+  

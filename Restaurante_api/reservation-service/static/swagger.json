@@ -1,0 +1,308 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Reservation API",
+      "version": "1.0.0",
+      "description": "API para gestionar reservas en restaurantes."
+    },
+    "paths": {
+      "/api/reservations": {
+        "get": {
+          "tags": ["Reservations"],
+          "summary": "Obtener todas las reservas",
+          "description": "Obtiene la lista de todas las reservas.",
+          "operationId": "getReservations",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Lista de reservas obtenida correctamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Reservation"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "post": {
+          "tags": ["Reservations"],
+          "summary": "Crear una nueva reserva",
+          "description": "Crea una nueva reserva.",
+          "operationId": "createReservation",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewReservation"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Reserva creada correctamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Reservation"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Datos inválidos"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        }
+      },
+      "/api/reservations/{id}": {
+        "get": {
+          "tags": ["Reservations"],
+          "summary": "Obtener detalles de una reserva",
+          "description": "Obtiene los detalles de una reserva específica por su ID.",
+          "operationId": "getReservation",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Reserva encontrada",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Reservation"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Reserva no encontrada"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Reservations"],
+          "summary": "Actualizar una reserva",
+          "description": "Actualiza los detalles de una reserva existente.",
+          "operationId": "updateReservation",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateReservation"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Reserva actualizada correctamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Reservation"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Datos inválidos"
+            },
+            "404": {
+              "description": "Reserva no encontrada"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Reservations"],
+          "summary": "Eliminar una reserva",
+          "description": "Elimina una reserva existente.",
+          "operationId": "deleteReservation",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Reserva eliminada correctamente"
+            },
+            "404": {
+              "description": "Reserva no encontrada"
+            },
+            "401": {
+              "description": "No autorizado"
+            },
+            "403": {
+              "description": "Permiso denegado"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "schemas": {
+        "Reservation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "user_id": {
+              "type": "integer"
+            },
+            "restaurant_id": {
+              "type": "integer"
+            },
+            "reservation_date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "num_guests": {
+              "type": "integer"
+            },
+            "special_requests": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "NewReservation": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "integer"
+            },
+            "restaurant_id": {
+              "type": "integer"
+            },
+            "reservation_date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "num_guests": {
+              "type": "integer"
+            },
+            "special_requests": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "required": ["user_id", "restaurant_id", "reservation_date", "num_guests"]
+        },
+        "UpdateReservation": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "integer"
+            },
+            "restaurant_id": {
+              "type": "integer"
+            },
+            "reservation_date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "num_guests": {
+              "type": "integer"
+            },
+            "special_requests": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+  
