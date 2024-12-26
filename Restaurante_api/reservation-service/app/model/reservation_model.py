@@ -1,4 +1,4 @@
-from database import db
+from app.database import db
 from sqlalchemy.orm import Session
 
 class Reservation(db.Model):

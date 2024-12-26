@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import requests
-from services.auth_service import get_token
+from app.services.auth_service import get_token
 
 bp = Blueprint('restaurant_api', __name__)
 

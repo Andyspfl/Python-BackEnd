@@ -1,5 +1,5 @@
 import requests
-from model.reservation_model import Reservation
+from app.model.reservation_model import Reservation
 from datetime import datetime
 
 
@@ -46,6 +46,8 @@ def update_reservation_service(id, data):
     reservation.special_requests = data.get("special_requests")
     reservation.status = data.get("status")
 
+    reservation.save()
+    
     return reservation
 
 

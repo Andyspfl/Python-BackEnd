@@ -38,8 +38,8 @@ def create_restaurant():
     desciption = data.get("description")
     rating = data.get("rating")
     
-    if not name or not address or not city or not phone or not desciption or not rating:
-        return jsonify({"error": "Faltan datos obligatorios"}), 400
+    if not name or not address or not city or not phone or not desciption or rating is None:
+        return jsonify({"error": "Faltan datos requeridos"}), 400
     
     restaurant = Restaurant(name=name, address=address, city=city, phone=phone, description=desciption, rating=rating)
     restaurant.save()

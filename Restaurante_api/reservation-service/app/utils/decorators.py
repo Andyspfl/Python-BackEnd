@@ -9,9 +9,7 @@ def jwt_required(fn):
     
     def wrapper(*args, **kwargs):
         try:
-            print("estoy aqui dentro")
             verify_jwt_in_request()
-            print("estoy aqui dentro 2")
             return fn(*args, **kwargs)
         except Exception as e:
             print('aqui el error')

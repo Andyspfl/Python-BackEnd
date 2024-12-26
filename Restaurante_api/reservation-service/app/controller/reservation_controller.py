@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from services.reservation_service import create_reservation_service, get_reservation_service, update_reservation_service, delete_reservation_service
-from utils.decorators import jwt_required, roles_required
-from view.reservation_view import render_reservation_detail, render_reservation_list
+from app.services.reservation_service import create_reservation_service, get_reservation_service, update_reservation_service, delete_reservation_service
+from app.utils.decorators import jwt_required, roles_required
+from app.view.reservation_view import render_reservation_detail, render_reservation_list
 import requests
 # Crear un blueprint para el controlador de reservas
 reservation_bp = Blueprint('reservation', __name__)
@@ -63,16 +63,16 @@ def update_reservation(id):
     jwt_token = request.headers.get("Authorization").split(" ")[1]  # Extraer el token JWT
     
     # Validar la existencia del usuario
-    user_response = requests.get(f"{USER_SERVICE_URL}/{data['user_id']}", headers = {"Authorization": jwt_token})
+    user_response = requests.get(f"{USER_SERVICE_URL}/{data.get("user_id")}", headers={"Authorization": f"Bearer {jwt_token}"})
     
     if user_response.status_code != 200:
-        return jsonify({"error": "Usuario no encontrado"}), 400
+        return jsonify({"error": "Ususario no encontrado"}), 400
     
-    restaurant_response = requests.get(f"{RESTAURANT_SERVICE_URL}/{data['restaurant_id']}", headers = {"Authorization":jwt_token})
+    restaurant_response = requests.get(f"{RESTAURANT_SERVICE_URL}/{data.get("restaurant_id")}", headers = {"Authorization": f"Bearer {jwt_token}"})
     
     if restaurant_response.status_code != 200:
         return jsonify({"error": "Restaurante no encontrado"}), 400
-    
+    print("aqui llegue :c")
     try:
         reservation = update_reservation_service(id, data)
         return jsonify(render_reservation_detail(reservation))
@@ -82,7 +82,7 @@ def update_reservation(id):
 # Ruta para eliminar una reserva existente
 @reservation_bp.route('/reservations/<int:id>', methods=['DELETE'])
 @jwt_required
-@roles_required(roles=['admin'])
+@roles_required(roles=['admin', 'user'])
 def delete_reservation(id):
     jwt_token = request.headers.get("Authorization").split(" ")[1]  # Extraer el token JWT
     result = delete_reservation_service(id, jwt_token)

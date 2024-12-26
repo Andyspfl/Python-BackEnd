@@ -2,8 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from controller.reservation_controller import reservation_bp
-from database import db
+from app.controller.reservation_controller import reservation_bp
+from app.database import db
 
 
 app = Flask(__name__)
