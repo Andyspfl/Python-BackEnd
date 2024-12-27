@@ -2,8 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from app.controller.user_controller import user_bp
-from app.database import db
+from controller.user_controller import user_bp
+from database import db
 
 
 app = Flask(__name__)
@@ -46,4 +46,4 @@ with app.app_context():
 
 # Ejecuta la aplicación
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0', port=5000)

@@ -3,7 +3,7 @@ import json
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.database import db
+from database import db
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"

@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app.utils.token_utils import decode_jwt_token
+from utils.token_utils import decode_jwt_token
 
 def get_token(request):
     auth_header = request.headers.get('Authorization')

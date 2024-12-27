@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt
 from werkzeug.security import check_password_hash
 
-from app.model.user_model import User
-from app.utils.decorators import jwt_required, roles_required
+from model.user_model import User
+from utils.decorators import jwt_required, roles_required
 
 # Crear el blueprint de usuario
 user_bp = Blueprint("user", __name__)

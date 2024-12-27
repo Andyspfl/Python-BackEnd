@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 import requests
-from app.services.auth_service import get_token
+from services.auth_service import get_token
 
 bp = Blueprint('restaurant_api', __name__)
 
-RESTAURANT_SERVICE_URL = "http://localhost:5001/api"  # URL del microservicio de restaurantes
+RESTAURANT_SERVICE_URL = "http://restaurant-service:5001/api"  # URL del microservicio de restaurantes
 
 @bp.route('/restaurants', methods=['GET'])
 def get_restaurants():

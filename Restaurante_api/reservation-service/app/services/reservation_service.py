@@ -1,5 +1,5 @@
 import requests
-from app.model.reservation_model import Reservation
+from model.reservation_model import Reservation
 from datetime import datetime
 
 

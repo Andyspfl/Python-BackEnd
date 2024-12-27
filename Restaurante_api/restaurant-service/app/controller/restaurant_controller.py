@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.model.restaurant_model import Restaurant
-from app.utils.decorators import roles_required, jwt_required
-from app.view.restaurant_view import render_restaurant_detail, render_restaurant_list
+from model.restaurant_model import Restaurant
+from utils.decorators import roles_required, jwt_required
+from view.restaurant_view import render_restaurant_detail, render_restaurant_list
 
 # Crear un blueprint para el controlador de restaurantes
 restaurant_bp = Blueprint('restaurant_bp', __name__)

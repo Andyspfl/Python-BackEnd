@@ -1,0 +1,28 @@
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "5005:5005"
+    depends_on:
+      - user-service
+      - restaurant-service
+      - reservation-service
+
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "5000:5000"
+
+  restaurant-service:
+    build:
+      context: ./restaurant-service
+    ports:
+      - "5001:5001"
+
+  reservation-service:
+    build:
+      context: ./reservation-service
+    ports:
+      - "5002:5002"

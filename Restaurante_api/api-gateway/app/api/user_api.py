@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 import requests
-from app.services.auth_service import get_token
+from services.auth_service import get_token
 
 bp = Blueprint('user_api', __name__)
 
-USER_SERVICE_URL = "http://localhost:5000/api"  # URL del microservicio de usuarios
+USER_SERVICE_URL = "http://user-service:5000/api"  # URL del microservicio de usuarios
 
 @bp.route('/register', methods=['POST'])
 def register_user():

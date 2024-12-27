@@ -1,6 +1,3 @@
-Flask
-requests
-PyJWT
 flask
 flask-sqlalchemy
 Flask-Login

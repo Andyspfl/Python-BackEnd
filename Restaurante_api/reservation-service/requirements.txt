@@ -1,6 +1,3 @@
-Flask
-requests
-PyJWT
 flask
 flask-sqlalchemy
 Flask-Login
@@ -9,4 +6,5 @@ flask-swagger-ui
 pytest
 pytest-flask
 gunicorn
+requests
 flask-cors

@@ -3,8 +3,8 @@ from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
-from app.controller.restaurant_controller import restaurant_bp
-from app.database import db
+from controller.restaurant_controller import restaurant_bp
+from database import db
 
 
 app = Flask(__name__)
@@ -49,4 +49,4 @@ with app.app_context():
 
 # Ejecuta la aplicación
 if __name__ == "__main__":
-    app.run(port=5001, debug=True)
+    app.run(port=5001,host='0.0.0.0', debug=True)
