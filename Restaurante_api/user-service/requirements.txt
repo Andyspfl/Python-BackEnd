@@ -7,3 +7,6 @@ pytest
 pytest-flask
 gunicorn
 flask-cors
+Flask-Mail
+itsdangerous
+python-dotenv
