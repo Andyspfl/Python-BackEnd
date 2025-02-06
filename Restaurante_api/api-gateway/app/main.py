@@ -1,5 +1,7 @@
 from flask import Flask
 from api import user_api, reservation_api, restaurant_api
+# importar cors
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
@@ -9,6 +11,9 @@ def create_app():
     app.register_blueprint(reservation_api.bp, url_prefix="/api")
     app.register_blueprint(restaurant_api.bp, url_prefix="/api")
 
+    # Habilitar CORS
+    CORS(app)
+    
     return app
 
 if __name__ == "__main__":
